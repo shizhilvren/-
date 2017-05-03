@@ -1,0 +1,73 @@
+body {
+    /*font-family: SimSun;*/
+    /*font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;*/
+    font: 12px/1.5 Tahoma, Helvetica, Arial, '宋体', sans-serif;
+}
+
+h1 {
+    font-size: 65px;
+}
+
+.body_index {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    color: white;
+    /*line-height: 46px;*/
+}
+
+.body_img {
+    background-image: url("../img/0432.JPG");
+    background-size: cover;
+    /*background-repeat: no-repeat;*/
+    z-index: -100;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    filter: blur(15px);
+}
+
+.padding_top_0 {
+    padding-top: 0!important;
+}
+
+.input_my {
+    /*color: white;*/
+    opacity: 1;
+    font-size: 46px !important;
+    background-color: transparent;
+    height: 75px!important;
+}
+
+.label_my {
+    color: white;
+    font-size: 46px !important;
+    padding-top: 0!important;
+}
+
+.btn_my {
+    font-size: 36px!important;
+    height: 75px;
+}
+
+.vi {
+    padding: 15% 20% 0 20%;
+    position: relative;
+    font-size: 32px;
+    color: white;
+    vertical-align: middle;
+}
+
+.textarea_my {
+    resize: none;
+    /*width: 20%;*/
+    /*height: 30%!important;*/
+}
+
+.input_buf {
+    opacity: 0.5;
+    background: white;
+    height: 75px;
+    top: -75px;
+}

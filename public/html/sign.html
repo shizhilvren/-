@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>最美微笑报名?</title>
+</head>
+
+<body style="background-color: #f6fffc">
+    <div id="sign">
+        <div style="padding: 20% 20% 0 20%">
+            <div style="text-align: center;padding-bottom: 20px">
+                <h1>报名信息</h1>
+            </div>
+            <div>
+                <form class="form-horizontal" enctype="multipart/form-data" method="post" name="fileinfo" id="fileform">
+                    <div class="form-group form-group-lg">
+                        <label for="name" class="col-xs-3 control-label">姓名</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="name" :placeholder="user.name" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-lg">
+                        <label for="num" class="col-xs-3 control-label">学号</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="num" :placeholder="user.id" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-lg">
+                        <label for="phone" class="col-xs-3 control-label">联系电话</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="phone" v-model="user.phone" maxlength="11">
+                        </div>
+                    </div>
+                    <div class="form-group form-group-lg">
+                        <label for="meg" class="col-xs-3 control-label">宣言</label>
+                        <div class="col-xs-9">
+                            <textarea class="form-control textarea_my" id="meg" v-model="user.meg" maxlength="120"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-lg has-success has-feedback">
+                        <label class="control-label col-xs-3" for="file" required>上传图片</label>
+                        <div class="col-xs-9">
+                            <input type="file" name="file" class="form-control" id="fileupload" aria-describedby="inputSuccess3Status" :placeholder="user.img_path" data-url="/api/student/img/" multiple>
+                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputSuccess3Status" class="sr-only">(success)</span>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-lg">
+                        <label for="meg" class="col-xs-offset-4 control-label">注：图片须小于750k</label>
+                    </div>
+                    <div class="orm-group form-group-lg">
+                        <img class="col-xs-offset-4" id="img" :src="user.img_path" width="250px" height="250px" style="border-radius: 10px">
+                    </div>
+                    <div style="height: 20px"></div>
+                    <div class="form-group form-group-lg">
+                        <div class="col-xs-offset-4 col-xs-4">
+                            <button type="button" class="btn btn-success btn-block" v-on:click="user_change">修改</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/jquery-3.2.1.js"></script>
+<script src="/static/bootstrap-3.3.7/dist/js/bootstrap.js"></script>
+<script src="/static/js/jquery.ui.widget.js"></script>
+<script src="/static/js/jquery.iframe-transport.js"></script>
+<script src="/static/js/jquery.fileupload.js"></script>
+<script src="/static/js/sign.js"></script>
+<link rel="stylesheet" href="/static/bootstrap-3.3.7/dist/css/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/static/css/all.css" type="text/css">
+
+
+</html>
