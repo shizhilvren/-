@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>最美微笑投票</title>
+</head>
+
+<body class="backcolor_my">
+    <div id="show">
+        <div style="padding: 10% 20% 0 20%">
+            <h2><span>Checked names: {{ checkeid }}</span></h2>
+            <div style="text-align: center;padding-bottom: 20px">
+                <h1>最美微笑投票</h1>
+            </div>
+            <div v-for='data in user' class="div_show" v-on:click="checkeid_check(3)">
+                <img :src="data.img_path" class="img_show_4_3">
+                <div>
+                    <h3>
+                        {{data.name}}
+                    </h3>
+                </div>
+                <div>
+                    <h3>
+                        {{data.meg}}
+                    </h3>
+                </div>
+                <input type="checkbox" :id="data._id" :value="data._id" v-model="checkeid">
+                <label :for="data._id"><h3>选择</h3></label>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/jquery-3.2.1.js"></script>
+<script src="/static/bootstrap-3.3.7/dist/js/bootstrap.js"></script>
+<script src="/static/js/show.js"></script>
+<link rel="stylesheet" href="/static/bootstrap-3.3.7/dist/css/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/static/css/all.css" type="text/css">
+
+
+</html>

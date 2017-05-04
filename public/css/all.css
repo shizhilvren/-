@@ -71,3 +71,23 @@ h1 {
     height: 75px;
     top: -75px;
 }
+
+.backcolor_my {
+    background-color: #f6fffc;
+}
+
+.img_show_sign_4_3 {
+    width: 400px;
+    height: 300px;
+    border-radius: 15px;
+}
+
+.img_show_4_3 {
+    width: 480px;
+    height: 360px;
+    border-radius: 15px;
+}
+
+.div_show {
+    margin: 10px 0;
+}

@@ -29,9 +29,14 @@ route_static.use(function(req, res, next) {
     console.log(req.method, req.url);
     next();
 });
-app.get('/static/sign.html/:uid', function(req, res) {
+app.get('/static/sign/:uid', function(req, res) {
     // console.log('hear4');
     res.sendfile('./public/html/sign.html');
+    //res.end();
+});
+app.get('/static/show/:uid', function(req, res) {
+    // console.log('hear4');
+    res.sendfile('./public/html/show.html');
     //res.end();
 });
 app.get('/', function(req, res) {

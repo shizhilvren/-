@@ -6,6 +6,7 @@ var fs = require("fs");
 var sys = require("sys");
 var multer = require('multer');
 const path = require('path')
+const moment = require('moment');
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, path.join(__dirname, '../public/img'))
@@ -46,8 +47,18 @@ var model_login = db.model('logins', Schema_login);
 var model_stu = db.model("stus", Schema_stu);
 
 
-var data = { name: "李希萌", id: "15051720", phone: '18100170574', meg: '这是一些宣言！', img_path: '/hear/aaaa' };
-var Student = new model_Student(data);
+// var data = { name: "李希萌", id: "15051720", phone: '18100170574', meg: '这是一些宣言！', img_path: '/hear/aaaa' };
+// var Student = new model_Student(data);
+var time_lin = [];
+for (var i = 10; i <= 18; i++) {
+    var name = "05-" + i.toString();
+    var str = "2017-" + name + " 00:00:00";
+    time_lin[name] = new Date(str).getTime();
+}
+const time = time_lin;
+console.log(time);
+var t1 = moment(new Date()).format('YYYY-MM-DD');
+console.log(t1);
 
 function api() {
     var express = require("express");
@@ -60,13 +71,14 @@ function api() {
     //name为姓名
     //id为学号
     route.post('/student/login', function(req, res) {
-        console.log(req.body.name + req.body.id);
         // console.log(uuid.v4());
         var data = {};
         try {
+            console.log(req.body.name + req.body.id);
             data.name = req.body.name;
             data.uid = parseInt(req.body.id);
         } catch (err) {
+            console.log(err);
             res.json({ flag: false });
             return;
         }
@@ -90,7 +102,7 @@ function api() {
                     } else if (result) {
                         var res_data = {
                             flag: true,
-                            url: '/static/sign.html/' + result.uid
+                            url: '/static/sign/' + result.uid
                         }
                         res.json(res_data);
                     } else {
@@ -112,7 +124,7 @@ function api() {
                                         console.log(err);
                                         res.json({ flag: false });
                                     } else {
-                                        var url = '/static/sign.html/' + data_l.uid;
+                                        var url = '/static/sign/' + data_l.uid;
                                         var res_data = {
                                             flag: true,
                                             url: url
@@ -121,7 +133,7 @@ function api() {
                                     }
                                 });
                             }
-                        })
+                        });
                     }
                 });
             } else {
@@ -134,10 +146,12 @@ function api() {
     //id为学号
     //uidw为标示
     route.post('/student/get', function(req, res) {
-        console.log(req.body.uid);
+        var t1 = moment(new Date()).format('YYYY-MM-DD');
+        console.log(t1);
         // console.log(uuid.v4());
         var data = {};
         try {
+            console.log(req.body.uid);
             data.uid = req.body.uid;
         } catch (err) {
             console.log(err);
@@ -158,6 +172,7 @@ function api() {
                     if (err) {
                         console.log(err);
                         res.json({ flag: false });
+                        return;
                     } else {
                         var res_data = {};
                         //console.log(resf,'hearrrrrrr');
@@ -219,6 +234,7 @@ function api() {
                 } catch (err) {
                     console.log('err insert');
                     res.json({ flag: false });
+                    return;
                 }
                 model_Student.update(old_sel, new_sel, function(err, resf) {
                     if (err) {
@@ -295,6 +311,44 @@ function api() {
             return;
         });
 
+    });
+    //信息展示
+    //{uid}
+    route.post('/student/get_all', function(req, res) {
+        var data = {};
+        try {
+            console.log(req.body.uid);
+            data.uid = req.body.uid;
+        } catch (err) {
+            console.log(err);
+            res.json({ flag: false });
+        }
+        model_login.findOne(data, function(err, result) {
+            if (err) {
+                onsole.log(err);
+                res.json({ flag: false });
+                return;
+            } else if (result) {
+                model_Student.find({}, '_id name meg img_path', function(err, resf) {
+                    if (err) {
+                        console.log(err);
+                        res.json({ flag: false });
+                        return;
+                    } else {
+                        var res_data = {
+                            flag: true,
+                            data: resf
+                        }
+                        console.log(res_data);
+                        res.json(res_data);
+                    }
+                });
+            } else {
+                console.log("未注册的用户");
+                res.json({ flag: false });
+                return;
+            }
+        });
     });
 
 
