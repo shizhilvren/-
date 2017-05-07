@@ -42,9 +42,16 @@ var Schema_stu = new mongoose.Schema({
     // isVoted: Int32Array,
     role: String
 });
+var Schema_vote = new mongoose.Schema({
+    name: String,
+    id: String,
+    vote_date: { type: String, default: "2017-05-01" },
+    vote_num: { type: Number, default: 0 }
+});
 var model_Student = db.model('students', Schema_student);
 var model_login = db.model('logins', Schema_login);
 var model_stu = db.model("stus", Schema_stu);
+var model_vote = db.model("votes", Schema_vote);
 
 
 // var data = { name: "李希萌", id: "15051720", phone: '18100170574', meg: '这是一些宣言！', img_path: '/hear/aaaa' };
@@ -59,6 +66,9 @@ const time = time_lin;
 console.log(time);
 var t1 = moment(new Date()).format('YYYY-MM-DD');
 console.log(t1);
+const time_submit = new Date("2017-05-06 00:00:00").getTime();
+const time_vote_start = new Date("2017-05-07 00:00:00").getTime();
+const time_vote_end = new Date("2017-05-08 00:00:00").getTime();
 
 function api() {
     var express = require("express");
@@ -82,64 +92,137 @@ function api() {
             res.json({ flag: false });
             return;
         }
-        model_stu.findOne(data, function(err, result) {
-            if (err) {
-                console.log(err);
-                res.json({ flag: false });
-                // console.log("hear");
-                return;
-            } else if (result) {
-                var data_l = {
-                    id: data.uid.toString(),
-                    name: data.name
-                }
-
-                model_login.findOne(data_l, function(err, result) {
-                    if (err) {
-                        console.log(err);
-                        res.json({ flag: false });
-                        return;
-                    } else if (result) {
-                        var res_data = {
-                            flag: true,
-                            url: '/static/sign/' + result.uid
-                        }
-                        res.json(res_data);
-                    } else {
-                        data_l.uid = uuid.v4();
-                        var login = model_login(data_l);
-                        login.save(function(err) {
-                            if (err) {
-                                console.log(err);
-                                res.json({ flag: false });
-                            } else {
-                                console.log('img save success');
-                                var ins = {
-                                    id: data_l.id,
-                                    name: data_l.name
-                                };
-                                var student = model_Student(ins);
-                                student.save(function(err) {
-                                    if (err) {
-                                        console.log(err);
-                                        res.json({ flag: false });
-                                    } else {
-                                        var url = '/static/sign/' + data_l.uid;
-                                        var res_data = {
-                                            flag: true,
-                                            url: url
-                                        };
-                                        res.json(res_data);
-                                    }
-                                });
-                            }
-                        });
+        var time_now = Date.now();
+        //注册时间
+        if (time_now < time_submit) {
+            model_stu.findOne(data, function(err, result) {
+                if (err) {
+                    console.log(err);
+                    res.json({ flag: false });
+                    // console.log("hear");
+                    return;
+                } else if (result) {
+                    var data_l = {
+                        id: data.uid.toString(),
+                        name: data.name
                     }
-                });
-            } else {
-                res.json({ flag: false });
-            }
-        });
+
+                    model_login.findOne(data_l, function(err, result) {
+                        if (err) {
+                            console.log(err);
+                            res.json({ flag: false });
+                            return;
+                        } else if (result) {
+                            var res_data = {
+                                flag: true,
+                                url: '/static/sign/' + result.uid
+                            }
+                            res.json(res_data);
+                        } else {
+                            data_l.uid = uuid.v4();
+                            var login = model_login(data_l);
+                            login.save(function(err) {
+                                if (err) {
+                                    console.log(err);
+                                    res.json({ flag: false });
+                                } else {
+                                    console.log('img save success');
+                                    var ins = {
+                                        id: data_l.id,
+                                        name: data_l.name
+                                    };
+                                    var student = model_Student(ins);
+                                    student.save(function(err) {
+                                        if (err) {
+                                            console.log(err);
+                                            res.json({ flag: false });
+                                        } else {
+                                            var url = '/static/sign/' + data_l.uid;
+                                            var res_data = {
+                                                flag: true,
+                                                url: url
+                                            };
+                                            res.json(res_data);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    res.json({ flag: false });
+                }
+            });
+        } else if (time_now < time_vote_start) { //注册结束 投票之前
+            res.json({ flag: false });
+        } else if (time_now < time_vote_end) { //投票中
+            model_stu.findOne(data, function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    res.json({ flag: false });
+                    // console.log("hear");
+                    return;
+                } else if (doc) {
+                    var data_l = {
+                        id: data.uid.toString(),
+                        name: data.name
+                    }
+
+                    model_login.findOne(data_l, function(err, doc) {
+                        if (err) {
+                            console.log(err);
+                            res.json({ flag: false });
+                            return;
+                        } else if (doc) {
+                            //参赛选手登录
+                            var ins = {
+                                id: data_l.id,
+                                name: data_l.name
+                            };
+                            var res_data = {
+                                flag: true,
+                                url: '/static/show/' + doc.uid
+                            }
+                            res.json(res_data);
+                        } else {
+                            //新用户登录
+                            data_l.uid = uuid.v4();
+                            var login = model_login(data_l);
+                            login.save(function(err) {
+                                if (err) {
+                                    console.log(err);
+                                    res.json({ flag: false });
+                                } else {
+                                    console.log('img save success');
+                                    var ins = {
+                                        id: data_l.id,
+                                        name: data_l.name
+                                    };
+                                    var vote = model_vote(ins);
+                                    vote.save(function(err) {
+                                        if (err) {
+                                            console.log(err);
+                                            res.json({ flag: false });
+                                        } else {
+                                            var url = '/static/show/' + data_l.uid;
+                                            var res_data = {
+                                                flag: true,
+                                                url: url
+                                            };
+                                            res.json(res_data);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    res.json({ flag: false });
+                }
+            });
+        } else { //投票后
+
+        }
     });
     //取得注册信息
     //name为姓名
