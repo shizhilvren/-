@@ -22,36 +22,40 @@ db.on("error", console.error.bind(console, '连接错误'));
 db.once('open', function() {
     console.log('连接成功');
 });
-
+//最大投票数量
+const vote_num = 3;
 //表结构 全表查询
 var Schema_student = new mongoose.Schema({
-    name: String,
+    name: { type: String },
     id: { type: String },
-    phone: String,
-    meg: String,
-    img_path: String
+    phone: { type: String, maxlength: 11 },
+    meg: { type: String },
+    img_path: { type: String },
+    vote_num: { type: Number, default: 0, min: 0 }
 });
 var Schema_login = new mongoose.Schema({
-    name: String, //<10位
-    id: String, //8位长
-    uid: String
+    name: { type: String }, //<10位
+    id: { type: String }, //8位长
+    uid: { type: String },
+    vote_date: { type: String, default: "2017-05-01" },
+    vote_num: { type: Number, default: 0, min: 0, max: vote_num }
 });
 var Schema_stu = new mongoose.Schema({
     uid: Number,
-    name: String,
+    name: { type: String },
     // isVoted: Int32Array,
-    role: String
+    role: { type: String },
 });
-var Schema_vote = new mongoose.Schema({
-    name: String,
-    id: String,
-    vote_date: { type: String, default: "2017-05-01" },
-    vote_num: { type: Number, default: 0 }
-});
+// var Schema_vote = new mongoose.Schema({
+//     name: String,
+//     id: String,
+//     vote_date: { type: String, default: "2017-05-01" },
+//     vote_num: { type: Number, default: 0 }
+// });
 var model_Student = db.model('students', Schema_student);
 var model_login = db.model('logins', Schema_login);
 var model_stu = db.model("stus", Schema_stu);
-var model_vote = db.model("votes", Schema_vote);
+// var model_vote = db.model("votes", Schema_vote);
 
 
 // var data = { name: "李希萌", id: "15051720", phone: '18100170574', meg: '这是一些宣言！', img_path: '/hear/aaaa' };
@@ -68,7 +72,8 @@ var t1 = moment(new Date()).format('YYYY-MM-DD');
 console.log(t1);
 const time_submit = new Date("2017-05-06 00:00:00").getTime();
 const time_vote_start = new Date("2017-05-07 00:00:00").getTime();
-const time_vote_end = new Date("2017-05-08 00:00:00").getTime();
+const time_vote_end = new Date("2017-05-10 00:00:00").getTime();
+
 
 function api() {
     var express = require("express");
@@ -167,25 +172,20 @@ function api() {
                         id: data.uid.toString(),
                         name: data.name
                     }
-
+                    console.log(data_l);
                     model_login.findOne(data_l, function(err, doc) {
                         if (err) {
                             console.log(err);
                             res.json({ flag: false });
                             return;
                         } else if (doc) {
-                            //参赛选手登录
-                            var ins = {
-                                id: data_l.id,
-                                name: data_l.name
-                            };
                             var res_data = {
                                 flag: true,
                                 url: '/static/show/' + doc.uid
                             }
                             res.json(res_data);
                         } else {
-                            //新用户登录
+                            // 新用户登录
                             data_l.uid = uuid.v4();
                             var login = model_login(data_l);
                             login.save(function(err) {
@@ -193,25 +193,13 @@ function api() {
                                     console.log(err);
                                     res.json({ flag: false });
                                 } else {
-                                    console.log('img save success');
-                                    var ins = {
-                                        id: data_l.id,
-                                        name: data_l.name
+                                    console.log('save success');
+                                    var url = '/static/show/' + data_l.uid;
+                                    var res_data = {
+                                        flag: true,
+                                        url: url
                                     };
-                                    var vote = model_vote(ins);
-                                    vote.save(function(err) {
-                                        if (err) {
-                                            console.log(err);
-                                            res.json({ flag: false });
-                                        } else {
-                                            var url = '/static/show/' + data_l.uid;
-                                            var res_data = {
-                                                flag: true,
-                                                url: url
-                                            };
-                                            res.json(res_data);
-                                        }
-                                    });
+                                    res.json(res_data);
                                 }
                             });
                         }
@@ -433,7 +421,209 @@ function api() {
             }
         });
     });
-
+    //投票端口 {uid,_id}
+    route.post('/student/vote', function(req, res) {
+        var data = {};
+        var _id = [];
+        try {
+            console.log(req.body);
+            data.uid = req.body.uid;
+            _id = req.body._id;
+        } catch (err) {
+            console.log(err);
+            res.json({ flag: false });
+            return;
+        }
+        if (_id == undefined) {
+            res.json({
+                flag: false,
+                data: {
+                    meg: '你没有选择'
+                }
+            });
+            return;
+        }
+        if (_id.length > vote_num) {
+            res.json({
+                flag: false,
+                data: {
+                    meg: '投票数大于' + vote_num
+                }
+            });
+            return;
+        }
+        model_login.findOne(data, function(err, doc) {
+            if (err) {
+                console.log(err);
+                res.json({ flag: false });
+            } else if (doc) {
+                //投票主逻辑
+                var time_now = moment(new Date()).format('YYYY-MM-DD');
+                var conditions = {
+                    "uid": data.uid,
+                    "$or": [
+                        { "vote_num": { "$lt": vote_num } },
+                        { "vote_time": { "$ne": time_now } }
+                    ]
+                };
+                console.log(conditions);
+                // model_login.update(cons);
+                model_login.findOne(conditions, function(err, doc) {
+                    if (err) {
+                        console.log(err);
+                    } else if (doc) {
+                        console.log(doc);
+                        //今日已投票
+                        if (doc.vote_date == time_now) {
+                            if (doc.vote_num + _id.length > vote_num) {
+                                //多投了
+                                res.json({
+                                    flag: false,
+                                    data: {
+                                        meg: "您只能再投" + (vote_num - doc.vote_num) + "张"
+                                    }
+                                });
+                            } else {
+                                var updata = {
+                                    "$inc": { "vote_num": _id.length },
+                                    "$set": { "vote_date": time_now }
+                                }
+                                model_login.update(conditions, updata, function(err, num) {
+                                    console.log('hear3', num);
+                                    if (err) {
+                                        console.log(err);
+                                        res.json({ flag: flase });
+                                        return;
+                                    } else if (num.nModified == 1) {
+                                        console.log("投票");
+                                        model_Student.update({
+                                            "_id": { "$in": _id }
+                                        }, {
+                                            "$inc": { "vote_num": 1 }
+                                        }, {
+                                            multi: true
+                                        }, function(err, num) {
+                                            console.log('hear4', num);
+                                            if (err) {
+                                                console.log(err);
+                                                res.json({ flag: flase });
+                                            } else if (num.nModified == _id.length) {
+                                                res.json({ flag: true });
+                                            } else {
+                                                console.log(err);
+                                                res.json({ flag: false });
+                                            }
+                                        });
+                                    } else {
+                                        res.json({ flag: false });
+                                    }
+                                })
+                            }
+                        } else {
+                            //今日没投
+                            var updata = {
+                                "$set": { "vote_num": _id.length, "vote_date": time_now }
+                            }
+                            model_login.update(conditions, updata, function(err, num) {
+                                console.log('hear1', num);
+                                if (err) {
+                                    console.log(err);
+                                    res.json({ flag: flase });
+                                } else if (num.nModified == 1) {
+                                    res.json({ flag: true });
+                                } else {
+                                    console.log(err);
+                                    res.json({ flag: false });
+                                }
+                                model_Student.update({
+                                    "_id": { "$in": _id }
+                                }, {
+                                    "$inc": { "vote_num": 1 }
+                                }, {
+                                    multi: true
+                                }, function(err, num) {
+                                    console.log('hear2', num);
+                                    if (err) {
+                                        console.log(err);
+                                        res.json({ flag: flase });
+                                    } else if (num.nModified == _id.length) {
+                                        res.json({ flag: true });
+                                    } else {
+                                        console.log(err);
+                                        res.json({ flag: false });
+                                    }
+                                });
+                            });
+                        }
+                    } else {
+                        //今日已投票 并数量够
+                        console.log("error");
+                        res.json({
+                            flag: false,
+                            data: {
+                                meg: "您今日已投过票"
+                            }
+                        })
+                    }
+                });
+            } else {
+                res.json({ flag: false });
+            }
+        });
+    });
+    //获取结果 {uid}
+    route.post('/student/get_ans', function(req, res) {
+        var data = {};
+        try {
+            console.log(req.body.uid);
+            data.uid = req.body.uid;
+        } catch (err) {
+            console.log(err);
+            res.json({ flag: false });
+        }
+        model_Student.find({}, '-_id name vote_num', { sort: [{ vote_num: -1 }] }, function(err, docs) {
+            if (err) {
+                console.log(err);
+                res.json({ flag: false });
+                return;
+            } else {
+                console.log(docs);
+                res.json({
+                    flag: true,
+                    data: docs
+                });
+            }
+        });
+    });
+    //取得是否需要投票
+    route.post('/student/get_vote', function(req, res) {
+        var uid;
+        try {
+            console.log(req.body.uid);
+            uid = req.body.uid;
+        } catch (err) {
+            console.log(err);
+            res.json({ flag: false });
+        }
+        var time_now = moment(new Date()).format("YYYY-MM-DD");
+        var conditions = {
+            "uid": uid,
+            "vote_date": time_now,
+            "vote_num": vote_num
+        };
+        console.log(conditions);
+        model_login.count(conditions, function(err, count) {
+            console.log(count);
+            if (err) {
+                console.log(err);
+                res.json({ flag: flase });
+            } else if (count == 1) {
+                res.json({ flag: false });
+            } else {
+                res.json({ flag: true });
+            }
+        });
+    });
 
 
     return route;

@@ -8,6 +8,10 @@ h1 {
     font-size: 65px;
 }
 
+[type=checkbox] {
+    zoom: 270%;
+}
+
 .body_index {
     position: absolute;
     height: 100%;
@@ -90,4 +94,23 @@ h1 {
 
 .div_show {
     margin: 10px 0;
+    border-bottom: 1px solid black;
+}
+
+.div_show_word {
+    font-size: 30px;
+    /*float: left;*/
+    height: 100%;
+    /*width: 100%;*/
+    /*position: relative;*/
+    /*position: absolute;*/
+}
+
+.test {
+    /*position: absolute;*/
+    height: 53px;
+    /*width: 50%;*/
+    background: red;
+    /*margin-top: -100%*/
+    opacity: 0.5;
 }

@@ -9,25 +9,27 @@
 <body class="backcolor_my">
     <div id="show">
         <div style="padding: 10% 20% 0 20%">
-            <h2><span>Checked names: {{ checkeid }}</span></h2>
+            <!--<h2><span>Checked names: {{ checkeid }}</span></h2>-->
             <div style="text-align: center;padding-bottom: 20px">
                 <h1>最美微笑投票</h1>
             </div>
-            <div v-for='data in user' class="div_show" v-on:click="checkeid_check(3)">
+            <div v-for='data in user' class="div_show " v-on:click="checkeid_check(3)">
                 <img :src="data.img_path" class="img_show_4_3">
-                <div>
-                    <h3>
-                        {{data.name}}
-                    </h3>
+                <div class="div_show_word">
+                    {{data.name}} {{data.meg}}
+                    <div style="float: right;">
+                        <input type="checkbox" :id="data._id" :value="data._id" v-model="checkeid">
+                        <label :for="data._id"><div></div></label>
+                    </div>
                 </div>
-                <div>
-                    <h3>
-                        {{data.meg}}
-                    </h3>
-                </div>
-                <input type="checkbox" :id="data._id" :value="data._id" v-model="checkeid">
-                <label :for="data._id"><h3>选择</h3></label>
+                <div style="clear:both"></div>
             </div>
+            <div class="form-group form-group-lg" style="margin:50px 0 40px 0;">
+                <div style="height:60px">
+                    <button type="button" class="btn btn-success btn-primary btn-lg btn-block btn_my" v-on:click="vote">投&nbsp&nbsp&nbsp票</button>
+                </div>
+            </div>
+            <div style="height:100px"></div>s
         </div>
     </div>
 </body>

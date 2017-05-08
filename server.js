@@ -15,9 +15,6 @@ const path = require('path');
 
 // var route_api = express.Router();
 
-
-
-
 //app.use(multer({ dest: './uploads/' }));
 app.use(bodyParse.json({ limit: '1mb' }));
 app.use(bodyParse.urlencoded({
@@ -29,14 +26,22 @@ route_static.use(function(req, res, next) {
     console.log(req.method, req.url);
     next();
 });
+//报名页面
 app.get('/static/sign/:uid', function(req, res) {
     // console.log('hear4');
     res.sendfile('./public/html/sign.html');
     //res.end();
 });
+//投票页面
 app.get('/static/show/:uid', function(req, res) {
     // console.log('hear4');
     res.sendfile('./public/html/show.html');
+    //res.end();
+});
+//结果页面
+app.get('/static/anser/:uid', function(req, res) {
+    // console.log('hear4');
+    res.sendfile('./public/html/anser.html');
     //res.end();
 });
 app.get('/', function(req, res) {
@@ -54,15 +59,6 @@ app.get('/', function(req, res) {
 });
 app.use('/static', route_static);
 app.use('/static', express.static('public'));
-//var storage = multer.diskStorage({
-//    destination: function (req, file, cb) {
-//        cb(null, path.join(__dirname,'./public/img'))
-//    },
-//    filename: function (req, file, cb) {
-//        cb(null, file.fieldname + '-' + Date.now())
-//    }
-//})
-// app.use(multer({ dest: './public/img/',storage: storage}).array('image'));
 app.use('/api', route_api.api());
 app.listen(port);
 

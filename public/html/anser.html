@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>最美微笑投票</title>
+</head>
+
+<body class="backcolor_my">
+    <div id="show">
+        <div style="padding: 10% 10% 0 10%">
+            <div style="text-align: center;padding-bottom: 20px">
+                <h1>投票结果</h1>
+            </div>
+            <table class="table table-condensed">
+
+                <tr v-for='data in user' class="div_show" style="height:53px">
+                    <!--<img :src="data.img_path" class="img_show_4_3">-->
+                    <td class="col-xs-2 div_show_word">
+                        {{data.name}}
+                    </td>
+                    <td class="col-xs-2 div_show_word">
+                        {{data.vote_num}}
+                    </td>
+                    <td class="col-xs-8 div_show_word" style="padding:0;height:100%">
+                        <div style="float:right;padding:5px">
+                            {{data.present}}
+                        </div>
+                        <div class="test" :style="data.present_s">
+                            &nbsp
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/jquery-3.2.1.js"></script>
+<script src="/static/bootstrap-3.3.7/dist/js/bootstrap.js"></script>
+<script src="/static/js/anser.js"></script>
+<link rel="stylesheet" href="/static/bootstrap-3.3.7/dist/css/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/static/css/all.css" type="text/css">
+
+
+</html>
