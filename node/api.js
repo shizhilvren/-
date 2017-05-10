@@ -29,8 +29,8 @@ var Schema_student = new mongoose.Schema({
     name: { type: String },
     id: { type: String },
     phone: { type: String, maxlength: 11 },
-    meg: { type: String },
-    img_path: { type: String },
+    meg: { type: String, default: '' },
+    img_path: { type: String, default: '' },
     vote_num: { type: Number, default: 0, min: 0 }
 });
 var Schema_login = new mongoose.Schema({
@@ -491,7 +491,7 @@ function api() {
                 res.json({ flag: false });
                 return;
             } else if (result) {
-                model_Student.find({}, '_id name meg img_path vote_num', function(err, resf) {
+                model_Student.find({ "img_path": { $exists: true } }, '_id name meg img_path vote_num', function(err, resf) {
                     if (err) {
                         console.log(err);
                         res.json({ flag: false });

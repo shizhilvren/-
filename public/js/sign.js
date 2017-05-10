@@ -86,6 +86,9 @@ var app2 = new Vue({
                 phone: this.user.phone,
                 img_path: this.user.img_path
             };
+            if (data.phone == null) {
+                alert_my('请填写电话', "warning")
+            }
             $.post('/api/student/change/', data, function(data) {
                 if (data.flag) {
                     alert_my('修改成功!', 'success');
