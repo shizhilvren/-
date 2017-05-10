@@ -8,54 +8,56 @@
 
 <body class="backcolor_my">
     <div id="sign">
-        <div style="padding: 20% 20% 0 20%">
+        <div style="padding: 5% 13% 0 13%;">
             <div style="text-align: center;padding-bottom: 20px">
                 <h1>报名信息</h1>
             </div>
-            <div>
+            <div style="font-size:45px">
                 <form class="form-horizontal" enctype="multipart/form-data" method="post" name="fileinfo" id="fileform">
                     <div class="form-group form-group-lg">
-                        <label for="name" class="col-xs-3 control-label">姓名</label>
+                        <label for="name" class="col-xs-3 control-label sign_size">姓名</label>
                         <div class="col-xs-9">
-                            <input type="text" class="form-control" id="name" :placeholder="user.name" readonly>
+                            <input type="text" class="form-control input_sign_my" id="name" :placeholder="user.name" readonly>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="num" class="col-xs-3 control-label">学号</label>
+                        <label for="num" class="col-xs-3 control-label sign_size">学号</label>
                         <div class="col-xs-9">
-                            <input type="text" class="form-control" id="num" :placeholder="user.id" readonly>
+                            <input type="text" class="form-control input_sign_my" id="num" :placeholder="user.id" readonly>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="phone" class="col-xs-3 control-label">联系电话</label>
+                        <label for="phone" class="col-xs-3 control-label sign_size">电话</label>
                         <div class="col-xs-9">
-                            <input type="text" class="form-control" id="phone" v-model="user.phone" maxlength="11">
+                            <input type="text" class="form-control input_sign_my" id="phone" v-model="user.phone" maxlength="11">
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="meg" class="col-xs-3 control-label">宣言</label>
+                        <label for="meg" class="col-xs-3 control-label sign_size">宣言</label>
                         <div class="col-xs-9">
                             <textarea class="form-control textarea_my" id="meg" v-model="user.meg" maxlength="120"></textarea>
                         </div>
                     </div>
                     <div class="form-group form-group-lg has-success has-feedback">
-                        <label class="control-label col-xs-3" for="file" required>上传图片</label>
+                        <label class="control-label col-xs-3 sign_size" for="file" required>照片</label>
                         <div class="col-xs-9">
-                            <input type="file" name="file" class="form-control" id="fileupload" aria-describedby="inputSuccess3Status" :placeholder="user.img_path" data-url="/api/student/img/" multiple>
-                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                            <input type="file" name="file" class="form-control input_sign_file" id="fileupload" aria-describedby="inputSuccess3Status" :placeholder="user.img_path" data-url="/api/student/img/" multiple>
+                            <input type="text" class="form-control input_sign_my" id="file_show" style="margin-top:-75px">
+
+                            <span class="glyphicon glyphicon-ok form-control-feedback right" id="file_right" aria-hidden="true"></span>
                             <span id="inputSuccess3Status" class="sr-only">(success)</span>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="meg" class="col-xs-offset-4 control-label">注：图片须小于750k</label>
+                        <label for="meg" class="col-xs-offset-3 control-label" style="font-size:30px">注：图片须小于750k</label>
                     </div>
-                    <div class="orm-group form-group-lg">
-                        <img class="col-xs-offset-1 img_show_sign_4_3" id="img" :src="user.img_path">
+                    <div class="orm-group form-group-lg col-xs-offset-2">
+                        <img class="img_show_sign_4_3" id="img" :src="user.img_path">
                     </div>
                     <div style="height: 20px"></div>
                     <div class="form-group form-group-lg">
-                        <div class="col-xs-offset-4 col-xs-4">
-                            <button type="button" class="btn btn-success btn-block" v-on:click="user_change">修改</button>
+                        <div class="col-xs-offset-2 col-xs-8">
+                            <button type="button" class="btn btn-success btn-block btn_sign_my" v-on:click="user_change">修&nbsp&nbsp&nbsp&nbsp&nbsp改</button>
                         </div>
                     </div>
                 </form>

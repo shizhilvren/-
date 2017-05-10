@@ -24,12 +24,9 @@ var app2 = new Vue({
     },
     mounted: function() {
         var url = window.location.href;
-        //console.log(url.split('/'));
         var uid = url.split('/').reverse()[0];
-        //console.log(uid);
         var data = {};
         data.uid = uid;
-        //console.log(this.user,'hear');
         var data_out = {};
         $.ajax({
             type: "post",
@@ -64,7 +61,9 @@ var app2 = new Vue({
                 done: function(e, data) {
                     if (data.result.flag) {
                         alert_my('上传成功!', 'success');
-                        // alert('上传成功');
+                        $("#file_right").attr("style", "display:inline");
+                        $("#file_show").val("上传成功")
+                            // alert('上传成功');
                         app2.user.img_path = data.result.data.img_path;
                         $("#img").attr("src", data.result.data.img_path);
                     } else {
@@ -78,9 +77,7 @@ var app2 = new Vue({
     methods: {
         user_change: function() {
             var url = window.location.href;
-            //console.log(url.split('/'));
             var uid = url.split('/').reverse()[0];
-            //console.log(uid);
             var data = {
                 uid: uid,
                 name: this.user.name,

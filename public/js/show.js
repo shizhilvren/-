@@ -39,11 +39,8 @@ var app2 = new Vue({
             async: false,
             success: function(data) {
                 if (data.flag) {
-                    console.log(data.data);
                     data_out = data.data;
-                } else {
-                    console.log('err');
-                }
+                } else {}
             }
         });
         for (var i = 0; i < data_out.length; i++) {
@@ -59,9 +56,7 @@ var app2 = new Vue({
                 alert_my("只能选择" + len + "个", " warning");
                 // alert("只能选择" + len + "个");
                 return;
-            } else {
-                // console.log("ok");
-            }
+            } else {}
             for (var i = 0; i < this.user.length; i++) {
                 this.user[i].chose_msg = '点击选择';
                 this.user[i].class = 'btn-info';
@@ -94,29 +89,15 @@ var app2 = new Vue({
                 data: data,
                 async: false,
                 success: function(data) {
-                    console.log(data);
                     if (data.flag) {
-                        console.log("true");
                         alert_my('投票成功', 'success');
                         // alert("投票成功");
                     } else {
-                        console.log("false");
-                        alert_my('投票失败<br>' + '您今天已经投过了', 'warning');
+                        alert_my('投票失败<br>' + data.data.meg, 'warning');
                         // alert(data.data.meg);
                     }
                 }
             });
-            // $.post('/api/student/vote', data, function(data) {
-            //     console.log(data);
-            //     if (data.flag) {
-            //         console.log("true");
-            //         alert("投票成功");
-            //         // window.location.href = '/static/show/' + window.location.href.split('/').reverse()[0];
-            //     } else {
-            //         console.log("false");
-            //         alert(data.data.meg);
-            //     }
-            // });
             var url = window.location.href;
             var uid = url.split('/').reverse()[0];
             var data = {
@@ -130,11 +111,8 @@ var app2 = new Vue({
                 async: false,
                 success: function(data) {
                     if (data.flag) {
-                        console.log(data.data);
                         data_out = data.data;
-                    } else {
-                        console.log('err');
-                    }
+                    } else {}
                 }
             });
             for (var i = 0; i < data_out.length; i++) {

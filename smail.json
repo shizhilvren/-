@@ -1,0 +1,16 @@
+{
+    "apps": {
+        "name": "smail",
+        "cwd": "/home/smail",
+        "script": "server.js",
+        "exec_interpreter": "bash",
+        "min_uptime": "60s",
+        "max_restarts": 30,
+        "exec_mode": "cluster_mode",
+        "error_file": "./smail-err.log",
+        "out_file": "./smail-out.log",
+        "log_date_format": "YYYY-MM-DD HH:mm:ss",
+        "pid_file": "./smail.pid",
+        "watch": false
+    }
+}

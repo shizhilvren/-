@@ -60,20 +60,13 @@ var model_stu = db.model("stus", Schema_stu);
 
 // var data = { name: "李希萌", id: "15051720", phone: '18100170574', meg: '这是一些宣言！', img_path: '/hear/aaaa' };
 // var Student = new model_Student(data);
-var time_lin = [];
-for (var i = 10; i <= 18; i++) {
-    var name = "05-" + i.toString();
-    var str = "2017-" + name + " 00:00:00";
-    time_lin[name] = new Date(str).getTime();
-}
-const time = time_lin;
-console.log(time);
+
 var t1 = moment(new Date()).format('YYYY-MM-DD');
 console.log(t1);
 const time_submit_start = new Date("2017-05-10 00:00:00").getTime();
-const time_submit_end = new Date("2017-05-12 00:00:00").getTime();
+const time_submit_end = new Date("2017-05-13 00:00:00").getTime();
 const time_vote_start = new Date("2017-05-13 00:00:00").getTime();
-const time_vote_end = new Date("2017-05-16 00:00:00").getTime();
+const time_vote_end = new Date("2017-05-18 00:00:00").getTime();
 
 
 function api() {
@@ -90,7 +83,7 @@ function api() {
         // console.log(uuid.v4());
         var data = {};
         try {
-            console.log(req.body.name + req.body.id);
+            console.log(req.body.name + " " + req.body.id);
             data.name = req.body.name;
             data.uid = parseInt(req.body.id);
             // console.log(data.hasOwnProperty('uid'));
@@ -374,6 +367,7 @@ function api() {
         var data = {};
         try {
             data.uid = req.body.uid;
+            console.log(data.uid);
         } catch (err) {
             res.json({ flag: false });
             return;
@@ -430,11 +424,11 @@ function api() {
                 })
                 return;
             }
-            console.log(req.file.filename);
             var uid = req.params.name;
             var id = req.params.id;
             var data = {};
             data.uid = uid;
+            console.log(req.file.filename + " " + uid);
             model_login.findOne(data, function(err, result) {
                 if (err) {
                     console.log(err);
@@ -560,11 +554,20 @@ function api() {
             });
             return;
         }
-        if (_id.length > vote_num) {
+        if (_id.length != vote_num) {
             res.json({
                 flag: false,
                 data: {
-                    meg: '投票数大于' + vote_num
+                    meg: '您应投三张票'
+                }
+            });
+            return;
+        }
+        if (_id[0] == _id[1] || _id[1] == _id[2] || _id[0] == _id[2]) {
+            res.json({
+                flag: false,
+                data: {
+                    meg: '不能投给同一个人^_^'
                 }
             });
             return;
