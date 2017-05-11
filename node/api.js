@@ -70,9 +70,10 @@ const time = time_lin;
 console.log(time);
 var t1 = moment(new Date()).format('YYYY-MM-DD');
 console.log(t1);
-const time_submit = new Date("2017-05-06 00:00:00").getTime();
-const time_vote_start = new Date("2017-05-07 00:00:00").getTime();
-const time_vote_end = new Date("2017-05-10 00:00:00").getTime();
+const time_submit_start = new Date("2017-05-10 00:00:00").getTime();
+const time_submit_end = new Date("2017-05-12 00:00:00").getTime();
+const time_vote_start = new Date("2017-05-13 00:00:00").getTime();
+const time_vote_end = new Date("2017-05-16 00:00:00").getTime();
 
 
 function api() {
@@ -92,18 +93,38 @@ function api() {
             console.log(req.body.name + req.body.id);
             data.name = req.body.name;
             data.uid = parseInt(req.body.id);
+            // console.log(data.hasOwnProperty('uid'));
+            // console.log(data.uid);
+            if (isNaN(data.uid)) {
+                throw '非法学号';
+            }
         } catch (err) {
             console.log(err);
-            res.json({ flag: false });
+            res.json({
+                flag: false,
+                data: {
+                    meg: '请核对学号和姓名'
+                }
+            });
             return;
         }
+
         var time_now = Date.now();
         //注册时间
-        if (time_now < time_submit) {
+        if (time_now < time_submit_start) {
+            res.json({
+                flag: false,
+                data: {
+                    meg: '还未开始报名'
+                }
+            });
+        } else if (time_now < time_submit_end) {
             model_stu.findOne(data, function(err, result) {
                 if (err) {
                     console.log(err);
-                    res.json({ flag: false });
+                    res.json({
+                        flag: false
+                    });
                     // console.log("hear");
                     return;
                 } else if (result) {
@@ -111,11 +132,15 @@ function api() {
                         id: data.uid.toString(),
                         name: data.name
                     }
-
                     model_login.findOne(data_l, function(err, result) {
                         if (err) {
                             console.log(err);
-                            res.json({ flag: false });
+                            res.json({
+                                flag: false,
+                                data: {
+                                    meg: '请核对学号和姓名'
+                                }
+                            });
                             return;
                         } else if (result) {
                             var res_data = {
@@ -155,16 +180,31 @@ function api() {
                         }
                     });
                 } else {
-                    res.json({ flag: false });
+                    res.json({
+                        flag: false,
+                        data: {
+                            meg: '请核对学号和姓名'
+                        }
+                    });
                 }
             });
         } else if (time_now < time_vote_start) { //注册结束 投票之前
-            res.json({ flag: false });
+            res.json({
+                flag: false,
+                data: {
+                    meg: '报名已结束，投票尚未开始'
+                }
+            });
         } else if (time_now < time_vote_end) { //投票中
             model_stu.findOne(data, function(err, doc) {
                 if (err) {
                     console.log(err);
-                    res.json({ flag: false });
+                    res.json({
+                        flag: false,
+                        data: {
+                            meg: '请核对学号和姓名'
+                        }
+                    });
                     // console.log("hear");
                     return;
                 } else if (doc) {
@@ -209,7 +249,64 @@ function api() {
                 }
             });
         } else { //投票后
-
+            model_stu.findOne(data, function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    res.json({
+                        flag: false,
+                        data: {
+                            meg: '请核对学号和姓名'
+                        }
+                    });
+                    // console.log("hear");
+                    return;
+                } else if (doc) {
+                    var data_l = {
+                        id: data.uid.toString(),
+                        name: data.name
+                    }
+                    console.log(data_l);
+                    model_login.findOne(data_l, function(err, doc) {
+                        if (err) {
+                            console.log(err);
+                            res.json({ flag: false });
+                            return;
+                        } else if (doc) {
+                            var res_data = {
+                                flag: true,
+                                url: '/static/show/' + doc.uid
+                            }
+                            res.json(res_data);
+                        } else {
+                            // 新用户登录
+                            data_l.uid = uuid.v4();
+                            var login = model_login(data_l);
+                            login.save(function(err) {
+                                if (err) {
+                                    console.log(err);
+                                    res.json({ flag: false });
+                                } else {
+                                    console.log('save success');
+                                    var url = '/static/show/' + data_l.uid;
+                                    var res_data = {
+                                        flag: true,
+                                        url: url
+                                    };
+                                    res.json(res_data);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    res.json({ flag: false });
+                }
+            });
+            // res.json({
+            //     flag: false,
+            //     data: {
+            //         meg: '投票以结束'
+            //     }
+            // });
         }
     });
     //取得注册信息
@@ -400,7 +497,7 @@ function api() {
                 res.json({ flag: false });
                 return;
             } else if (result) {
-                model_Student.find({}, '_id name meg img_path', function(err, resf) {
+                model_Student.find({}, '_id name meg img_path vote_num', function(err, resf) {
                     if (err) {
                         console.log(err);
                         res.json({ flag: false });
@@ -423,6 +520,26 @@ function api() {
     });
     //投票端口 {uid,_id}
     route.post('/student/vote', function(req, res) {
+        var time_now = Date.now();
+        if (time_now < time_vote_start) {
+            res.json({
+                flag: false,
+                data: {
+                    meg: '投票尚未开始'
+                }
+            });
+            return;
+        }
+        if (time_now > time_vote_end) {
+            res.json({
+                flag: false,
+                data: {
+                    meg: '投票时间已过'
+                }
+            });
+            return;
+        }
+
         var data = {};
         var _id = [];
         try {

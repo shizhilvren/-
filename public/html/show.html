@@ -7,22 +7,31 @@
 </head>
 
 <body class="backcolor_my">
-    <div id="show">
-        <div style="padding: 10% 20% 0 20%">
-            <!--<h2><span>Checked names: {{ checkeid }}</span></h2>-->
+    <div id="show" style="padding: 10% 15% 0 15%">
+        <div>
             <div style="text-align: center;padding-bottom: 20px">
                 <h1>最美微笑投票</h1>
             </div>
-            <div v-for='data in user' class="div_show " v-on:click="checkeid_check(3)">
-                <img :src="data.img_path" class="img_show_4_3">
-                <div class="div_show_word">
-                    {{data.name}} {{data.meg}}
-                    <div style="float: right;">
-                        <input type="checkbox" :id="data._id" :value="data._id" v-model="checkeid">
-                        <label :for="data._id"><div></div></label>
+            <div class="row">
+                <div v-for='data in user' class="col-sm-12">
+                    <div class="thumbnail">
+                        <img :src="data.img_path" :alt="data.name" class="img_show_4_3">
+                        <div class="caption" style="text-align:center">
+                            <h2>{{data.name}} </h2>
+                            <p>{{data.meg}}</p>
+                            <p>票数：<span style="color:red">{{data.vote_num}}</span></p>
+                            <!--<p>-->
+                            <div v-on:click="checkeid_check(3)" class="row">
+                                <input type="checkbox" :id="data._id" :value="data._id" v-model="checkeid" style="display:none;">
+                                <div class="col-xs-offset-1 col-xs-10">
+                                    <div type="button" class="btn btn-primary btn-lg btn-block" v-bind:class="data.class" style="font-size:30px">
+                                        <label :for="data._id" style="display:block">{{data.chose_msg}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div style="clear:both"></div>
             </div>
             <div class="form-group form-group-lg" style="margin:50px 0 40px 0;">
                 <div style="height:60px">
@@ -32,6 +41,7 @@
             <div style="height:100px"></div>s
         </div>
     </div>
+
 </body>
 <script src="/static/js/vue.js"></script>
 <script src="/static/js/jquery-3.2.1.js"></script>
