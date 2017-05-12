@@ -6,7 +6,7 @@ body {
 }
 
 h1 {
-    font-size: 65px;
+    font-size: 95px;
 }
 
 h2 {
@@ -30,7 +30,7 @@ p {
 }
 
 .body_img {
-    background-image: url("../img/0432.JPG");
+    background-image: url("../img/0432.jpeg");
     background-size: cover;
     /*background-repeat: no-repeat;*/
     z-index: -100;
@@ -38,7 +38,7 @@ p {
     height: 100%;
     position: absolute;
     top: 0;
-    filter: blur(15px);
+    /*filter: blur(15px);*/
 }
 
 .padding_top_0 {
@@ -62,10 +62,12 @@ p {
 .btn_my {
     font-size: 36px!important;
     height: 75px;
+    border:none!important;
+    background-color:rgba(125, 112, 83, 0.61)!important
 }
 
 .vi {
-    padding: 15% 20% 0 20%;
+    padding: 15% 13% 0 13%;
     position: relative;
     font-size: 32px;
     color: white;
@@ -137,4 +139,10 @@ p {
     text-align: center;
     display: none;
     padding: 20px;
+
+}
+.my-form-back{
+    padding:55px 45px 30px 45px;
+
+    background-color: rgba(154, 163, 194, 0.52)
 }
