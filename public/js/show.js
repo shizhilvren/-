@@ -12,6 +12,9 @@ function alert_my(str, type) {
     }, 3000);
 }
 
+function randdomsort(a, b) {
+    return Math.random() > 0.5 ? -1 : 1;
+}
 
 
 var app2 = new Vue({
@@ -43,6 +46,7 @@ var app2 = new Vue({
                 } else {}
             }
         });
+        data_out.sort(randdomsort);
         for (var i = 0; i < data_out.length; i++) {
             data_out[i].chose_msg = '点击选择';
             data_out[i].class = 'btn-info';

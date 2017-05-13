@@ -30,7 +30,7 @@ var Schema_student = new mongoose.Schema({
     id: { type: String },
     phone: { type: String, maxlength: 11 },
     meg: { type: String, default: '' },
-    img_path: { type: String, default: '' },
+    img_path: { type: String },
     vote_num: { type: Number, default: 0, min: 0 }
 });
 var Schema_login = new mongoose.Schema({
