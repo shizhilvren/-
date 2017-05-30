@@ -8,8 +8,10 @@ function alert_my(str, type) {
         });
     }, 1000);
     setTimeout(function() {
-        $("#alert").remove();
-    }, 3000);
+        $("#alert").fadeOut('slow', function() {
+            $("#alert").remove();
+        });
+    }, 1100);
 }
 var app2 = new Vue({
     el: '#sign',
